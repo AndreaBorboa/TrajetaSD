@@ -21,38 +21,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        amigosDBHelper = miSQLiteHelper(this)
 
-        if ((ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) !=
-                    PackageManager.PERMISSION_GRANTED
-                    ) || (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) !=
-                    PackageManager.PERMISSION_GRANTED
-                    )
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                123
-            )
-            binding.btGuardar.setOnClickListener {
-                if(binding.etNombre.text.isNotBlank() &&
-                            binding.etEmail.text.isNotBlank()){
+        binding.btGuardar.setOnClickListener {
+            if(binding.etNombre.text.isNotBlank() &&
+                binding.etEmail.text.isNotBlank()){
                     amigosDBHelper.anyadirDato(binding.etNombre.text.toString(),
-                    binding.etEmail.text.toString())
-                    binding.etNombre.text.clear()
-                    binding.etEmail.text.clear()
-                    Toast.makeText(this,"Guardado",
+                        binding.etEmail.text.toString())
+                binding.etNombre.text.clear()
+                binding.etEmail.text.clear()
+                Toast.makeText(this,"Guardado",
                     Toast.LENGTH_SHORT).show()
-                }
-                else
+                } else{
                     Toast.makeText(this,"No se ha podido guardar",
                         Toast.LENGTH_SHORT).show()
             }
@@ -64,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             val cursor = db.rawQuery(
                 "SELECT * FROM amigos",
                 null)
+
             if(cursor.moveToFirst()){
                 do{
                     binding.tvConsulta.append(
